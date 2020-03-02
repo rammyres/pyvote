@@ -39,6 +39,36 @@
             "numero": 0,
             "hash_ant": "00009c6b6f91e916624f060d4e2a6e72f8a6be659ca77efe9feb29aec7456ead",
             "meu_hash": "00003c82bb947e66ff66c3db539c0910f00c40c0bce32da318294d84b62279e0"
+        },
+        {
+            "index": 4,
+            "tipoBloco": "voto",
+            "dados": "20",
+            "aleatorio": "dec3911c1eec09407ab5f968cbdf42b9",
+            "nonce": 255298,
+            "numero": 0,
+            "hash_ant": "00003c82bb947e66ff66c3db539c0910f00c40c0bce32da318294d84b62279e0",
+            "meu_hash": "0000ea629d500c1f0376c8376dbf14e4cd67b99bce7e2583b0e3a44c11a80e6f"
+        },
+        {
+            "index": 5,
+            "tipoBloco": "voto",
+            "dados": "10",
+            "aleatorio": "047f7d286c866712359f72a9dee244c5",
+            "nonce": 103061,
+            "numero": 0,
+            "hash_ant": "0000ea629d500c1f0376c8376dbf14e4cd67b99bce7e2583b0e3a44c11a80e6f",
+            "meu_hash": "0000a88324e6659e08d53ac13ec6c58bb5fa92fa5fc95fb4a1039b1f7cb01939"
+        },
+        {
+            "index": 6,
+            "tipoBloco": "voto",
+            "dados": "20",
+            "aleatorio": "7c870ffb7c1ced9423b7b33200c3c01f",
+            "nonce": 7861,
+            "numero": 0,
+            "hash_ant": "0000a88324e6659e08d53ac13ec6c58bb5fa92fa5fc95fb4a1039b1f7cb01939",
+            "meu_hash": "000091ec269fcf2134d6b3cc13290921a42e59f941bcf3b30b55c5396d5e9d21"
         }
     ]
 }

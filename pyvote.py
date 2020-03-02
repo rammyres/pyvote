@@ -1,5 +1,6 @@
 from hashlib import sha256
 from erros import hashAnteriorInvalido, tipoDeBlocoInvalido
+from collections import Counter
 import random, os, codecs, json
 
 class Block:
@@ -120,7 +121,25 @@ class Blockchain:
         candidatos = {"candidatos": c}
     
         return candidatos
-            
+    
+    def getVotos(self):
+        v = []
+        for b in self.blocks:
+            if b.tipoBloco=="voto":
+                v.append({"voto": b.dados})
+        votos = {"votos": v}
+
+        return votos
+
+    def contarVotos(self):
+        votos = self.getVotos()
+        numero = {}
+
+        for v in votos["votos"]:
+            numero.update({"voto":v["voto"]})
+            print(v)
+        print(numero)
+    
     
     def exportar(self, arquivo):
         f = open(arquivo, "w+")

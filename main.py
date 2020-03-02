@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
+import colorama
 from pyvote import Blockchain
+from colorama import Fore, Style, Back, init
+
+colorama.init(autoreset=True)
 
 def menu():
-    print("Selecione a função:\n01- Cadastrar candidato\n02- Listar Candidatos\n03- Votar\n04- Listar votos\n99- Sair")
+    print(f"\n{Fore.BLUE}{Style.BRIGHT}Selecione a função:")
+    print("01- Cadastrar candidato\n02- Listar Candidatos\n03- Votar\n04- Listar votos\n99- Sair")
     return input("Função: ")
 
 if __name__ == '__main__':
     blockchain = Blockchain()
-    
+
+    print(f"{Style.BRIGHT}{Fore.BLUE}Bem vindo ao sistema sistema PyVote")   
 
     try:
         arquivo = open("block.json")
@@ -46,6 +52,9 @@ if __name__ == '__main__':
                 blockchain.exportar("block.json")
             else: 
                 print("Candidato não localizado")
+        
+        elif escolha == "4":
+            blockchain.contarVotos()
 
         elif escolha == "99":
             blockchain.exportar("block.json") 
