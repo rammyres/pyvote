@@ -1,44 +1,15 @@
-from hashlib import sha256
-from erros import hashAnteriorInvalido, tipoDeBlocoInvalido
+#from hashlib import sha256
+from block import Block
+from erros import hashAnteriorInvalido
+from candidato import Candidato
 from collections import Counter
 import random, os, codecs, json
 
-class Block:
-    index = None
-    tipoBloco = None
-    dados = None
-    aleatorio = None
-    nonce = None
-    numero = None
-    hash_ant = None
-    meu_hash = None
-
-    def __init__(self, tipo):
-        if tipo == "Genesis" or tipo == "candidato" or tipo == "voto":
-            self.tipoBloco = tipo
-        else:
-            raise tipoDeBlocoInvalido("Tipo de bloco deve ser candidato ou voto")
-
-    def temHashValido(self, hash):
-        return hash.startswith('0000')
-
-    def crieMeuHash(self):
-        hash = ''
-        self.nonce = 1
-        while not self.temHashValido(hash):
-            block = '{}:{}:{}:{}:{}:{}'.format(
-                self.index, self.dados, self.aleatorio, self.nonce, self.numero, self.hash_ant
-            )
-            hash = sha256(block.encode()).hexdigest()
-            self.nonce += 1
-        
-        self.meu_hash = hash
-
 class Blockchain:
-    numeroCandidatos = 0
 
     def __init__(self):
         self.blocks = []
+        self.candidatosValidos = [Candidato]
 
     def criarBlocoGenesis(self):
         blocoGenesis = Block("Genesis")
@@ -55,6 +26,8 @@ class Blockchain:
         for c in cand:
             if nome==c["dados"] and numero==c["numero"]:
                 return True
+            else:
+                return False
     
     def validarNumero(self, numero):
         cand = self.getCandidatos()["candidatos"]
@@ -64,15 +37,18 @@ class Blockchain:
     
     def criarCandidato(self, nome, numero):
         if not self.procurarCandidato(nome, numero):
-            candidato = Block("candidato")
-            candidato.index = len(self.blocks)
-            candidato.dados = nome
-            candidato.numero = numero
-            candidato.aleatorio = codecs.encode(os.urandom(16), 'hex').decode()
-            candidato.hash_ant = self.blocks[len(self.blocks)-1].meu_hash
-            candidato.crieMeuHash()
-            self.blocks.append(candidato)
-            self.numeroCandidatos += 1
+            tCandidato = Block("candidato")
+            tCandidato.index = len(self.blocks)
+            tCandidato.dados = nome
+            tCandidato.numero = numero
+            tCandidato.aleatorio = codecs.encode(os.urandom(16), 'hex').decode()
+            tCandidato.hash_ant = self.blocks[len(self.blocks)-1].meu_hash
+            tCandidato.crieMeuHash()
+            self.blocks.append(tCandidato)
+
+            d = Candidato(nome, numero)
+            self.candidatosValidos.append(d)
+            
             return True
         else:
             return False
@@ -95,9 +71,7 @@ class Blockchain:
                 bloco = Block("Genesis")
             else:
                 bloco = Block(d["tipoBloco"])
-                if bloco.tipoBloco == "candidato":
-                    self.numeroCandidatos += 1
-
+    
             bloco.index = d["index"]
             bloco.dados = d["dados"]
             bloco.aleatorio = d["aleatorio"]
@@ -109,8 +83,12 @@ class Blockchain:
             if len(self.blocks)==0:
                 pass
             elif bloco.hash_ant != self.blocks[len(self.blocks)-1].meu_hash:
-                raise hashAnteriorInvalido("O bloco atual possui um hash inválido")
+                raise hashAnteriorInvalido("Não foi possível validar o hash do bloco anterior no bloco atual")
             self.blocks.append(bloco)
+            
+            if d["tipoBloco"]=="candidato":
+                c = Candidato(d["dados"], d["numero"])
+                self.candidatosValidos.append(c)
 
     def getCandidatos(self):
         c = []
@@ -118,28 +96,40 @@ class Blockchain:
             
             if b.tipoBloco == "candidato":
                 c.append({"numero": b.numero, "dados": b.dados})
-        candidatos = {"candidatos": c}
-    
-        return candidatos
-    
+
+        if len(c)>0:
+            return {"candidatos": c}
+        else:
+            return None
+
     def getVotos(self):
         v = []
         for b in self.blocks:
             if b.tipoBloco=="voto":
                 v.append({"voto": b.dados})
-        votos = {"votos": v}
+        return {"votos": v}
 
-        return votos
+#criar metodo para procurar os votos nas chaves 
+#completar o metodo contarVotos
+
+    def getNumeros(self):
+        tCandidatos = self.getCandidatos()
+        numeros = []
+                
+        for n in tCandidatos["candidatos"]:
+            numeros.append(int(n["numero"]))
+    
+        return numeros
+            
 
     def contarVotos(self):
-        votos = self.getVotos()
-        numero = {}
-
-        for v in votos["votos"]:
-            numero.update({"voto":v["voto"]})
-            print(v)
-        print(numero)
-    
+        votacao = self.getVotos()
+        
+        for b in votacao["votos"]:
+            for c in self.candidatosValidos:
+                if b["voto"]==c.numero:
+                    c.incrementarVoto()
+                
     
     def exportar(self, arquivo):
         f = open(arquivo, "w+")
@@ -148,7 +138,6 @@ class Blockchain:
         for b in self.blocks:
             s = {"index": b.index, "tipoBloco": b.tipoBloco, "dados": b.dados,"aleatorio": b.aleatorio, 
                  "nonce": b.nonce, "numero": b.numero, "hash_ant": b.hash_ant, "meu_hash": b.meu_hash}
-            #print(s)
             dicionarios.append(s)
 
         dicionario = {"block": dicionarios}

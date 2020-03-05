@@ -12,12 +12,14 @@ def menu():
 
 if __name__ == '__main__':
     blockchain = Blockchain()
+    
 
     print(f"{Style.BRIGHT}{Fore.BLUE}Bem vindo ao sistema sistema PyVote")   
 
     try:
         arquivo = open("block.json")
         blockchain.importar("block.json")
+        #blockchain.atualizarVotacao()
     except IOError:
         blockchain.criarBlocoGenesis()        
 
@@ -36,14 +38,14 @@ if __name__ == '__main__':
                 print("Já existe candidato com o mesmo nome e numero, inclusão recusada")
         
         elif escolha == "2":
-            candidatos = blockchain.getCandidatos()
+            tCandidatos = blockchain.getCandidatos()
             
-            for d in candidatos["candidatos"]:
+            for d in tCandidatos["candidatos"]:
                 print("{} - {}".format(d["numero"], d["dados"]))
         elif escolha == "3":
-            candidatos = blockchain.getCandidatos()
+            tCandidatos = blockchain.getCandidatos()
             
-            for d in candidatos["candidatos"]:
+            for d in tCandidatos["candidatos"]:
                 print("{} - {}".format(d["numero"], d["dados"]))
             v = input("Escolha seu candidato: ")
             if blockchain.validarNumero(v):
@@ -55,6 +57,9 @@ if __name__ == '__main__':
         
         elif escolha == "4":
             blockchain.contarVotos()
+            for c in blockchain.candidatosValidos:
+                
+                print("{} - {}: {} voto(s)".format(c.numero, c.nome, c.votacao))
 
         elif escolha == "99":
             blockchain.exportar("block.json") 
