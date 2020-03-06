@@ -17,9 +17,9 @@ if __name__ == '__main__':
     print(f"{Style.BRIGHT}{Fore.BLUE}Bem vindo ao sistema sistema PyVote")   
 
     try:
-        arquivo = open("block.json")
         blockchain.importar("block.json")
     except IOError:
+        print(f"{Back.BLUE}{Fore.WHITE}{Style.BRIGHT}Blockchain não localizada, criando o bloco Gênesis")
         blockchain.criarBlocoGenesis()        
 
     escolha = 0
@@ -28,19 +28,30 @@ if __name__ == '__main__':
         escolha = menu()
 
         if escolha == "1":
+            teste = True
+            while teste:
+                try:
+                    numero = str(int(input("Indique o numero do candidato: ")))
+                    teste = False
+                except ValueError:
+                    print("Você deve entrar um numero inteiro")
+                
             nome = input("Indique o nome do candidato: ")
-            numero = input("Indique o numero do candidato: ")
+            
         
             if blockchain.criarCandidato(nome, numero):
                 print("Candidato incluido com sucesso")
             else:
-                print("Já existe candidato com o mesmo nome e numero, inclusão recusada")
+                print(f"{Back.WHITE}Já existe candidato com o mesmo nome ou numero, inclusão recusada")
         
         elif escolha == "2":
             tCandidatos = blockchain.getCandidatos()
             
-            for d in tCandidatos["candidatos"]:
-                print("{} - {}".format(d["numero"], d["dados"]))
+            if tCandidatos:
+                for d in tCandidatos["candidatos"]:
+                    print("{} - {}".format(d["numero"], d["dados"]))
+            else:
+                print("Não existem candidatos cadastrados")
         elif escolha == "3":
             tCandidatos = blockchain.getCandidatos()
             
@@ -55,10 +66,13 @@ if __name__ == '__main__':
                 print("Candidato não localizado")
         
         elif escolha == "4":
-            blockchain.contarVotos()
-            for c in blockchain.candidatosValidos:
-                
-                print("{} - {}: {} voto(s)".format(c.numero, c.nome, c.votacao))
+
+            if len(blockchain.candidatosValidos)>0:
+                blockchain.contarVotos()
+                for c in blockchain.candidatosValidos:
+                    print("{} - {}: {} voto(s)".format(c.numero, c.nome, c.votacao))
+            else:
+                print("Não existem cadidatos cadastrados")
 
         elif escolha == "99":
             blockchain.exportar("block.json") 
