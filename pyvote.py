@@ -2,14 +2,13 @@
 from block import Block
 from erros import hashAnteriorInvalido
 from candidato import Candidato
-from collections import Counter
 import random, os, codecs, json
 
 class Blockchain:
 
     def __init__(self):
         self.blocks = []
-        self.candidatosValidos = [Candidato]
+        self.candidatosValidos = []
 
     def criarBlocoGenesis(self):
         blocoGenesis = Block("Genesis")
@@ -22,34 +21,45 @@ class Blockchain:
         self.blocks.append(blocoGenesis)
 
     def procurarCandidato(self, nome, numero):
-        cand = self.getCandidatos()["candidatos"]
-        for c in cand:
-            if nome==c["dados"] and numero==c["numero"]:
+        for c in self.candidatosValidos:
+            if nome==c.nome and numero==c.numero:
                 return True
             else:
                 return False
     
     def validarNumero(self, numero):
-        cand = self.getCandidatos()["candidatos"]
-        for c in cand:
-            if numero==c["numero"]:
+        for c in self.candidatosValidos:
+            if numero==c.numero:
                 return True
+            else:
+                return False
+    
+    def validarNome(self, nome):
+        for c in self.candidatosValidos:
+            if nome==c.nome:
+                return True
+            else:
+                return False
     
     def criarCandidato(self, nome, numero):
-        if not self.procurarCandidato(nome, numero):
-            tCandidato = Block("candidato")
-            tCandidato.index = len(self.blocks)
-            tCandidato.dados = nome
-            tCandidato.numero = numero
-            tCandidato.aleatorio = codecs.encode(os.urandom(16), 'hex').decode()
-            tCandidato.hash_ant = self.blocks[len(self.blocks)-1].meu_hash
-            tCandidato.crieMeuHash()
-            self.blocks.append(tCandidato)
+        if not self.validarNome(nome):
+            if not self.validarNumero(numero):
+                tCandidato = Block("candidato")
+                tCandidato.index = len(self.blocks)
+                tCandidato.dados = nome
+                tCandidato.numero = numero
+                tCandidato.aleatorio = codecs.encode(os.urandom(16), 'hex').decode()
+                tCandidato.hash_ant = self.blocks[len(self.blocks)-1].meu_hash
+                tCandidato.crieMeuHash()
+                self.blocks.append(tCandidato)
 
-            d = Candidato(nome, numero)
-            self.candidatosValidos.append(d)
-            
-            return True
+                d = Candidato(nome, numero)
+                self.candidatosValidos.append(d)
+
+                return True
+
+            else:
+                return False
         else:
             return False
 
