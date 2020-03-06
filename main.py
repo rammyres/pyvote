@@ -19,7 +19,6 @@ if __name__ == '__main__':
     try:
         arquivo = open("block.json")
         blockchain.importar("block.json")
-        #blockchain.atualizarVotacao()
     except IOError:
         blockchain.criarBlocoGenesis()        
 
