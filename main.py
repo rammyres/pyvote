@@ -28,11 +28,11 @@ if __name__ == '__main__':
         escolha = menu()
 
         if escolha == "1":
-            teste = True
-            while teste:
+
+            while True:
                 try:
                     numero = str(int(input("Indique o numero do candidato: ")))
-                    teste = False
+                    break
                 except ValueError:
                     print("Você deve entrar um numero inteiro")
                 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
             if blockchain.criarCandidato(nome, numero):
                 print("Candidato incluido com sucesso")
             else:
-                print(f"{Back.WHITE}Já existe candidato com o mesmo nome ou numero, inclusão recusada")
+                print(f"{Back.WHITE}{Fore.BLACK}Já existe candidato com o mesmo nome ou numero, inclusão recusada")
         
         elif escolha == "2":
             tCandidatos = blockchain.getCandidatos()
@@ -57,11 +57,24 @@ if __name__ == '__main__':
             
             for d in tCandidatos["candidatos"]:
                 print("{} - {}".format(d["numero"], d["dados"]))
-            v = input("Escolha seu candidato: ")
+
+            while True:
+                try:
+                    v = str(int(input("Escolha seu candidato: ")))
+                    break
+                except ValueError:
+                    print("Você deve entrar o número do candidato")
+
             if blockchain.validarNumero(v):
                 blockchain.votar(v)
+                
+                for c in range(0, len(blockchain.candidatosValidos)):
+                    if v == blockchain.candidatosValidos[c].numero:
+                        blockchain.candidatosValidos[c].votacaoApurada == False
+
                 print("Voto computado")
                 blockchain.exportar("block.json")
+
             else: 
                 print("Candidato não localizado")
         
