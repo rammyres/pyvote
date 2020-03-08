@@ -15,7 +15,10 @@ def menu():
 
     print(f"\n{Fore.BLUE}{Style.BRIGHT}Selecione a função:")
     print("01- Cadastrar candidato\n02- Listar Candidatos\n03- Votar\n04- Listar votos\n99- Sair")
-    return input("Função: ")
+    try:
+        return int(input("Função: "))
+    except ValueError:
+        print(f"{Fore.RED}{Style.BRIGHT}Você deve digitar o número da função desejada")
 
 def listaCandidatos():
     if len(blockchain.candidatosValidos)>0: # Verifica se existem candidatos cadastrados
@@ -46,7 +49,7 @@ if __name__ == '__main__':
     while escolha != 99:
         escolha = menu()
 
-        if escolha == "1":
+        if escolha == 1:
             #Inicia o modo de inclusão de candidatos, somente um candidato pode ser incluido por vez
 
             while True:
@@ -66,11 +69,11 @@ if __name__ == '__main__':
             else: # Caso o usuário tente incluir dados repetidos, a inclusão é recusada e o usuário é alertado 
                 print(f"{Back.WHITE}{Fore.BLACK}Já existe candidato com o mesmo nome ou numero, inclusão recusada")
         
-        elif escolha == "2":
+        elif escolha == 2:
             #Lista os candidatos existentes 
             listaCandidatos()
 
-        elif escolha == "3":
+        elif escolha == 3:
             #Permite que o usuário escolha um candidato na lista apresentada e vote 
 
             if listaCandidatos(): # Se existirem candidatos validos, o usuário poderá votar 
@@ -100,7 +103,7 @@ if __name__ == '__main__':
                 print(f"{Back.WHITE}{Fore.BLACK}Não existem candidatos cadastrados") # Caso não existam candidatos no sistema 
                                                                                      # o usuário e informado
         
-        elif escolha == "4":
+        elif escolha == 4:
             # Atualiza a contagem de votos dos candidatos que receberam votos ainda não computados e 
             # imprime o numero de votos de cada candidato na lista 
 
@@ -114,7 +117,7 @@ if __name__ == '__main__':
             else:
                 print(f"{Back.WHITE}{Fore.BLACK}Não existem cadidatos cadastrados") # Caso não existam candidatos no sistema, o usuário é informado
 
-        elif escolha == "99":
+        elif escolha == 99:
             #Interrompe o programa, após a exportação da blockchain
             
             blockchain.exportar("blockchain.json") 
