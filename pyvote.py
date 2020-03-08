@@ -50,6 +50,7 @@ class Blockchain:
 
         voto = Block(0, "voto", len(self.blocks), dados, self.blocks[len(self.blocks)-1].meu_hash)
         self.blocks.append(voto)
+        self.exportar("blockchain.json")
 
     def procurarCandidato(self, nome, numero):
         # Permite a busca pelo nome e número do candidato, caso ele exista retorna verdadeiro e interrompe a busca
