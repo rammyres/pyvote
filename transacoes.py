@@ -45,7 +45,7 @@ class tVoto(Transacoes):
     def __init__(self, numero):
         self.numero = numero
         self.aleatorio = codecs.encode(urandom(32), 'hex').decode()
-        self.meuHash = self.criarHash
+        self.meuHash = self.criarHash()
     
     def criarHash(self):
 
