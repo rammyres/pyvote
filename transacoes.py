@@ -12,7 +12,6 @@ class Transacoes:
     def criarTransacaoRaiz(self):
         hash = ''
         self.aleatorio = codecs.encode(urandom(32), 'hex').decode()
-        print(self.aleatorio)
         dados = '{}'.format(self.aleatorio)
         hash = sha256(dados.encode()).hexdigest()
         self.meuHash = hash
@@ -23,10 +22,10 @@ class tCandidato(Transacoes):
     transacao = None
     timestamp = None
 
-    def __init__(self, nome, numero, transacao):
+    def __init__(self, nome, numero, operacao):
         self.nome = nome
         self.numero = numero
-        self.transacao = transacao
+        self.operacao = operacao
         self.timestamp = datetime.timestamp(datetime.now())
 
         self.aleatorio = codecs.encode(urandom(32), 'hex').decode()
